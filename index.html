@@ -30,15 +30,15 @@ Course notes
 
 <!doctype html>
 <html lang="en">
-  <head>
+	<head>
 
-  	<!-- Load Roboto font -->
-  	<link href="https://fonts.googleapis.com/css?family=Roboto:400,900&display=swap" rel="stylesheet"> 
+	<!-- Load Roboto font -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,900&display=swap" rel="stylesheet"> 
 
-    <!-- Load D3 library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
+	<!-- Load D3 library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
 
-    <style type="text/css">
+	<style type="text/css">
 
 		body {
 			font-family: 'Roboto', sans-serif;
@@ -47,7 +47,7 @@ Course notes
 		}
 
 		.bar:hover {
-		  fill: rgb(171, 87, 135);
+			fill: rgb(171, 87, 135);
 		}
 
 		#title {
@@ -57,11 +57,11 @@ Course notes
 		}
 
 		#x-axis line, #x-axis path, #y-axis line, #y-axis path {
-		  stroke: rgb(156, 156, 156);
+			stroke: rgb(156, 156, 156);
 		}
 
 		#x-axis text, #y-axis text {
-		  fill: rgb(156, 156, 156);
+			fill: rgb(156, 156, 156);
 		} 
 
 		#x-axis, #y-axis {
@@ -69,125 +69,125 @@ Course notes
 			font-family: 'Roboto'
 		}
 
-    </style>
+	</style>
 
-  </head>
-  <body>
+	</head>
+	<body>
 
-	<!-- Load FCC test suite -->
-    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+		<!-- Load FCC test suite -->
+		<script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
 
-	<script>
+		<script>
 
-	d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json', function(error, data){ 	
-
-
-		// Define the size for the svg canvas
-		const w = 1000
-		const h = 500
-		const padding = 90
+		d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json', function(error, data){ 	
 
 
-		// Define the scales
-		var values = data.data.map(x => [new Date(x[0]), x[1]])
-
-		const yScale = d3.scaleLinear()
-						 .domain([0, d3.max(values, (d) => d[1])])
-                    	 .range([h - padding, padding]);
-
-        const xScale = d3.scaleTime()
-        				 .domain([d3.min(values, (d) => d[0]), d3.max(values, (d) => d[0])])
-        				 .range([padding, w - padding]);
-
-        // Define the axes
-        const xAxis = d3.axisBottom(xScale);
-        const yAxis = d3.axisLeft(yScale);
+			// Define the size for the svg canvas
+			const w = 1000
+			const h = 500
+			const padding = 90
 
 
-        // Transform date to "Year Quarter" format for the tooltip
-        let tooltipDate = (x) => {
+			// Define the scales
+			var values = data.data.map(x => [new Date(x[0]), x[1]])
 
-			var year = x.getFullYear();
-			var month = x.getMonth() + 1;
-			var quarter;
+			const yScale = d3.scaleLinear()
+							.domain([0, d3.max(values, (d) => d[1])])
+							.range([h - padding, padding]);
 
-			if (month == 1) {
-				quarter = "Q1"
-			} else if (month == 4) {
-				quarter = "Q2"
-			} else if (month == 7) {
-				quarter = "Q3"
-			} else {
-				quarter = "Q4"
+			const xScale = d3.scaleTime()
+							.domain([d3.min(values, (d) => d[0]), d3.max(values, (d) => d[0])])
+							.range([padding, w - padding]);
+
+			// Define the axes
+			const xAxis = d3.axisBottom(xScale);
+			const yAxis = d3.axisLeft(yScale);
+
+
+			// Transform date to "Year Quarter" format for the tooltip
+			let tooltipDate = (x) => {
+
+				var year = x.getFullYear();
+				var month = x.getMonth() + 1;
+				var quarter;
+
+				if (month == 1) {
+					quarter = "Q1"
+				} else if (month == 4) {
+					quarter = "Q2"
+				} else if (month == 7) {
+					quarter = "Q3"
+				} else {
+					quarter = "Q4"
+				};
+
+				return year + ' ' + quarter;
+
 			};
 
-			return year + ' ' + quarter;
+			// Create tooltip
+			var tooltip = d3.select("body")
+							.append("div")
+							.attr("id","tooltip")
+							.style("position", "absolute")
+							.style("z-index", "10")
 
-        };
+	        // Create the svg canvas
+			const svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
 
-		// Create tooltip
-		var tooltip = d3.select("body")
-						.append("div")
-						.attr("id","tooltip")
-						.style("position", "absolute")
-						.style("z-index", "10")
+			// Append bar chart to svg
+			svg.selectAll("rect")
+			.data(values)
+			.enter()
+			.append("rect")
+			.attr('data-date', function(d, i) {
+				return data.data[i][0]
+			})
+			.attr('data-gdp', function(d, i) {
+				return data.data[i][1]
+			})
+			.attr("x", (d, i) => xScale(d[0]))
+			.attr("y", (d, i) => yScale(d[1]))
+			.attr("width", 4)
+			.attr("height", (d, i) => h - padding - yScale(d[1]))
+			.attr("fill", "rgb(81, 178, 229)")
+			.attr("class", "bar")
+			.on("mousemove", function(d, i){
+			        tooltip
+					.attr('data-date', data.data[i][0])
+					.style("left", d3.event.pageX - 50 + "px")
+					.style("top", d3.event.pageY - 70 + "px")
+					.style("display", "inline-block")
+					.html(tooltipDate(d[0]) + ' / $' + d[1] + 'bn');
+				})
+					.on("mouseout", function(d){ tooltip.style("display", "none");});
 
-        // Create the svg canvas
-		const svg = d3.select("body")
-		              .append("svg")
-		              .attr("width", w)
-		              .attr("height", h);
-        
-        // Append bar chart to svg
-		svg.selectAll("rect")
-		.data(values)
-		.enter()
-		.append("rect")
-		.attr('data-date', function(d, i) {
-		  return data.data[i][0]
-		})
-		.attr('data-gdp', function(d, i) {
-		  return data.data[i][1]
-		})
-		.attr("x", (d, i) => xScale(d[0]))
-		.attr("y", (d, i) => yScale(d[1]))
-		.attr("width", 4)
-		.attr("height", (d, i) => h - padding - yScale(d[1]))
-		.attr("fill", "rgb(81, 178, 229)")
-		.attr("class", "bar")
-		.on("mousemove", function(d, i){
-		        tooltip
-				.attr('data-date', data.data[i][0])
-		        .style("left", d3.event.pageX - 50 + "px")
-		        .style("top", d3.event.pageY - 70 + "px")
-		        .style("display", "inline-block")
-		        .html(tooltipDate(d[0]) + ' / $' + d[1] + 'bn');
-		    })
-				.on("mouseout", function(d){ tooltip.style("display", "none");});
+			// Append the axes
+			svg.append("g")
+			.attr("transform", "translate(0, " + (h - padding) + ")")
+			.call(xAxis)
+			.attr("id", "x-axis");
 
-		// Append the axes
-		svg.append("g")
-		.attr("transform", "translate(0, " + (h - padding) + ")")
-		.call(xAxis)
-		.attr("id", "x-axis");
+			svg.append("g")
+			.attr("transform", "translate(" + padding + ", 0)")
+			.call(yAxis)
+			.attr("id", "y-axis");
 
-		svg.append("g")
-		.attr("transform", "translate(" + padding + ", 0)")
-		.call(yAxis)
-		.attr("id", "y-axis");
-
-		// Add a title to the chart
-		svg.append("text")
-		.attr("x", w/2)
-		.attr("y", padding/2)
-		.attr("text-anchor", "middle")
-		.attr("fill", "rgb(51, 51, 51)")
-		.attr("id", "title")
-		.text("United States GDP");
+			// Add a title to the chart
+			svg.append("text")
+			.attr("x", w/2)
+			.attr("y", padding/2)
+			.attr("text-anchor", "middle")
+			.attr("fill", "rgb(51, 51, 51)")
+			.attr("id", "title")
+			.text("United States GDP");
 
 
-	});
+		});
 
-	</script>
-  </body>
+		</script>
+	</body>
 </html>
