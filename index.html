@@ -85,7 +85,7 @@ Course notes
 			// Define the size for the svg canvas
 			const w = 1000
 			const h = 500
-			const padding = 90
+			const padding = 100
 
 
 			// Define the scales
@@ -184,6 +184,16 @@ Course notes
 			.attr("fill", "rgb(51, 51, 51)")
 			.attr("id", "title")
 			.text("United States GDP");
+
+
+			// text label for the y axis
+			svg.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("x", -h/2)
+			.attr("y", padding * 1 / 4)
+			.attr("fill", "rgb(156, 156, 156)")
+			.style("text-anchor", "middle")
+			.text("Billion USD");
 
 
 		});
