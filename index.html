@@ -175,7 +175,7 @@ Course notes
 					.style("background-color", "rgb(209, 144, 182)")
 					.html(tooltipDate(d[0]) + ' / $' + numberWithCommas(d[1]) + 'bn');
 				})
-					.on("mouseout", function(d){ tooltip.style("display", "none");});
+			.on("mouseout", function(d){ tooltip.style("display", "none");});
 
 			// Append the axes
 			svg.append("g")
