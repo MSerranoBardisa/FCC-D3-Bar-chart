@@ -69,6 +69,13 @@ Course notes
 			font-family: 'Roboto'
 		}
 
+		#tooltip {
+			color: rgb(51, 51, 51);
+			background-color: rgb(209, 144, 182);
+			padding: 10px;
+			border-radius: 3px;
+		}
+
 	</style>
 
 	</head>
@@ -125,6 +132,11 @@ Course notes
 
 			};
 
+			// Print number with commas
+			let numberWithCommas = (x) => {
+				return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			}
+
 			// Create tooltip
 			var tooltip = d3.select("body")
 							.append("div")
@@ -158,10 +170,10 @@ Course notes
 			.on("mousemove", function(d, i){
 			        tooltip
 					.attr('data-date', data.data[i][0])
-					.style("left", d3.event.pageX - 50 + "px")
-					.style("top", d3.event.pageY - 70 + "px")
+					.style("left", d3.event.pageX - 75 + "px")
+					.style("top", d3.event.pageY - 50 + "px")
 					.style("display", "inline-block")
-					.html(tooltipDate(d[0]) + ' / $' + d[1] + 'bn');
+					.html(tooltipDate(d[0]) + ' / $' + numberWithCommas(d[1]) + 'bn');
 				})
 					.on("mouseout", function(d){ tooltip.style("display", "none");});
 
@@ -185,16 +197,14 @@ Course notes
 			.attr("id", "title")
 			.text("United States GDP");
 
-
 			// text label for the y axis
 			svg.append("text")
 			.attr("transform", "rotate(-90)")
 			.attr("x", -h/2)
-			.attr("y", padding * 1 / 4)
+			.attr("y", padding * 1/4)
 			.attr("fill", "rgb(156, 156, 156)")
-			.style("text-anchor", "middle")
+			.attr("text-anchor", "middle")
 			.text("Billion USD");
-
 
 		});
 
