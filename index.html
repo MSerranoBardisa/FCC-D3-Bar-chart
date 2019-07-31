@@ -71,7 +71,6 @@ Course notes
 
 		#tooltip {
 			color: rgb(51, 51, 51);
-			background-color: rgb(209, 144, 182);
 			padding: 10px;
 			border-radius: 3px;
 		}
@@ -173,6 +172,7 @@ Course notes
 					.style("left", d3.event.pageX - 75 + "px")
 					.style("top", d3.event.pageY - 50 + "px")
 					.style("display", "inline-block")
+					.style("background-color", "rgb(209, 144, 182)")
 					.html(tooltipDate(d[0]) + ' / $' + numberWithCommas(d[1]) + 'bn');
 				})
 					.on("mouseout", function(d){ tooltip.style("display", "none");});
